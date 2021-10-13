@@ -1,0 +1,7 @@
+murilo;murilo@gmail.com;10.0
+jefferson;jefferson@botafogo.com;180.0
+seedorf;seedorf@botafogo.com;50.0
+garrincha;garrincha@botafogo.net;80.0
+jairzinho;jairzinho@botafogo.net;70.0
+André;andre@sccp.com;300.0
+pimpao;pimpao@gmail.com;170.0
