@@ -1,0 +1,39 @@
+Pontos positivos: 
+
++ Organizacao das classes em pacotes.
+
+
+Pontos negativos: 
+
+- Não há indícios de como realizar os calculos segundos as regras igualitaria e
+  proporcional. (-10%)
+- Não há uma classe Categoria / Subcategoria, mas apenas um campo em Despesa.
+  Isso não permite a vinculação de uma despesa a uma categoria. (-10%).
+
+- Heranca de Pessoa --> Pai. Pai, pelo visto, é uma classe de "despesa". Qual a
+  relação de heranca com uma Pessoa? (-10%)
+- Heranca de CalcularDespesa --> Pessoa. Idem ao comentário anterior, são
+  classes bem diferentes e não cabe uma relação de herança entre elas. (-10%)
+- Não há uma associação Despesa --> Categoria / Subcategoria. (-10%)
+
+
+
+Dúvidas: 
+
+
+
+
+
+Comentários: 
+
+O trabalho parece estar bem adiantado, contudo possui varios pontos que precisam
+ser revisados. Por exemplo, o uso indiscriminao de relações de herança e o uso
+de atributos em classes quando o ideal seria associação para outros objetos.
+Sugiro utilizar a herança para representar as diferenças entre os cálculos de
+divisão de despesas segundo as regras igualitária e proporcional. 
+
+
+
+
+Nota: 
+50/100 pontos.
