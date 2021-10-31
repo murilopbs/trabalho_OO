@@ -1,2 +1,2 @@
-asdasdas;sadasda;asdaasd;900.0
-assa;assa;assa;1.0
+asdasdas;sadasda;900.0
+assa;assa;1.0

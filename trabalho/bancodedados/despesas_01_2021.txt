@@ -1,3 +1,6 @@
-asdasd;asdsad;asdasd;800.0
-popo;popo;popo;1.5
-Agua;Caesb;;300.0
+asdasd;asdsad;800.0
+popo;popo;1.5
+Agua;Caesb;300.0
+refri;cacacola;30.0
+refri;fanta;24.0
+refri;gurana;20.0

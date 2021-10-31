@@ -1,6 +1,6 @@
 package classes;
 
-public class Pessoa extends Pai{
+public class Pessoa extends SalvarDados{
     private String nome ;
     private String email;
     public Pessoa(String pessoaNome, String pessoaEmail, float pessoaRendimentos) throws Excecoes{

@@ -1,21 +1,23 @@
 package app;
 import javax.swing.JOptionPane;
-import java.io.FileReader;
-import java.io.IOException;
 import classes.Pessoa;
+import classes.SubCategoria;
 import classes.Despesa;
 import classes.Excecoes;
 import classes.CalcularDespesa;
+import classes.Categoria;
 
 public class UI {
     static Pessoa[] pessoas = new Pessoa[0];
     static Despesa[] despesas = new Despesa[0];
     static CalcularDespesa[] calculardespesas = new CalcularDespesa[0];
+    static Categoria[] categoria = new Categoria[0];
+    static SubCategoria[] subcategoria = new SubCategoria[0];
     public static void main(String[] args){
         int opcao;
         int pessoaNovamente = 0;
         int despesaNovamente;
-        int dadosIncompletos = 1;
+        int dadosIncompletos = 0;
         do{
             String strOpcao = JOptionPane.showInputDialog("Escolha uma opção: \n"
             + "1 - Cadastrar Pessoa\n"
@@ -25,11 +27,16 @@ public class UI {
             opcao = Integer.parseInt(strOpcao);
             switch(opcao){
                 case 1:
-                    quebrar: do{
+                    do{
                         String nomeDaPessoa = JOptionPane.showInputDialog("Digite o nome da pessoa:");
                         String emailDaPessoa = JOptionPane.showInputDialog("Digite o email da pessoa:");
                         String strRendimentosDaPessoa = JOptionPane.showInputDialog("Digite os rendimentos da pessoa:");
-                        float rendimentosDaPessoa = Float.parseFloat(strRendimentosDaPessoa);
+                        float rendimentosDaPessoa;
+                        if(strRendimentosDaPessoa.isEmpty() | strRendimentosDaPessoa.isBlank()){
+                            rendimentosDaPessoa = -1;
+                        }else{
+                            rendimentosDaPessoa = Float.parseFloat(strRendimentosDaPessoa);
+                        }
                         try{
                             Pessoa p = new Pessoa(nomeDaPessoa, emailDaPessoa, rendimentosDaPessoa);
                             Pessoa[] temp = new Pessoa[pessoas.length + 1];
@@ -46,12 +53,9 @@ public class UI {
                                 "Continua",
                                 JOptionPane.YES_NO_OPTION
                                 );
-                            if(dadosIncompletos == 1){
-                                break quebrar;
-                            }
                         }
                         pessoaNovamente = 1;
-                        if(dadosIncompletos == 1){
+                        if(dadosIncompletos == 0){
                             pessoaNovamente = JOptionPane.showConfirmDialog(
                             null, 
                             "Deseja cadastrar uma nova pessoa?",
@@ -60,9 +64,10 @@ public class UI {
                             );
                         }
                     }while(pessoaNovamente == 0);
-                    for(int i = 0; i <= pessoas.length; i++){
-                        pessoas[i].salvarDados(pessoas[i].getNome(), pessoas[i].getEmail(), pessoas[i].getRendimentos(), "", "bancodedados/alunos.txt");
+                    for(int i = 0; i <= pessoas.length - 1; i++){
+                        pessoas[i].salvarDados(pessoas[i].getNome(), pessoas[i].getEmail(), pessoas[i].getRendimentos(), "bancodedados/alunos.txt");
                     }
+                    break;
                     
 
                 case 2:
@@ -74,6 +79,9 @@ public class UI {
                         String strAno = JOptionPane.showInputDialog("Digite o ano da despesa:");
                         String nomeDespesa = JOptionPane.showInputDialog("Digite a descrição da despesa:");
                         String categoriaDespesa = JOptionPane.showInputDialog("Digite o nome da categoria da despesa:");
+                        Categoria k = new Categoria();
+                        k.setCategoriaDespesa(categoriaDespesa);
+                        k.setNomeDespesa(nomeDespesa);
                         int intSubcategoria = JOptionPane.showConfirmDialog(
                             null, 
                             "A despesa possui uma subcategoria?",
@@ -81,13 +89,23 @@ public class UI {
                             JOptionPane.YES_NO_OPTION
                         );
                         String nomeSubcategoria = "";
+                        String Subcategoria = "";
+                        SubCategoria sb = new SubCategoria();
                         if(intSubcategoria == 0){
                             nomeSubcategoria = JOptionPane.showInputDialog("Digite o nome da subcategoria da despesa:");
+                            Subcategoria = JOptionPane.showInputDialog("Digite a descrição da subcategoria da despesa:");
+                            sb.setCatergoriaSub(Subcategoria);
+                            sb.setNomeSub(nomeSubcategoria);
                         }
                         String strValorDespesas = JOptionPane.showInputDialog("Digite o valor da despesa:");
-                        float valorDespesas = Float.parseFloat(strValorDespesas);
+                        float valorDespesas;
+                        if(strValorDespesas.isEmpty() || strValorDespesas.isBlank()){
+                            valorDespesas = 0;
+                        }else{
+                            valorDespesas = Float.parseFloat(strValorDespesas);
+                        }
                         try{
-                            Despesa d = new Despesa(strMes, strAno, nomeDespesa, categoriaDespesa, nomeSubcategoria, valorDespesas);
+                            Despesa d = new Despesa(strMes, strAno, k.getNomeDespesa(), k.getCategoriaDespesa(), nomeSubcategoria, valorDespesas);
                             Despesa[] tempDespesas = new Despesa[despesas.length + 1];
                             for(int i = 0; i < despesas.length; i++){
                                 tempDespesas[i] = despesas[i];
@@ -116,16 +134,13 @@ public class UI {
                     String caminho;
                     for(int i = 0; i < despesas.length; i++){
                         caminho = "bancodedados/despesas_"+ despesas[i].getMesDespesa() + "_" + despesas[i].getAnoDespesa() +".txt";
-                        despesas[i].salvarDados(despesas[i].getNomeDespesa(), despesas[i].getCategoriaDespesa(), despesas[i].getValorDespesa(), despesas[i].getNomeSubcategoria(), caminho);
+                        despesas[i].salvarDados(despesas[i].getNomeDespesa(), despesas[i].getCategoriaDespesa(), despesas[i].getValorDespesa(), caminho);
                     }
                     break;
                 
                 case 3:
-                    float somadorRendimentos = 0;
                     float somadorDespesas = 0;
-                    int moradores = 0;
-                    String nome = "";
-                    float rendimentos = 0;
+                    float moradores = 0;
                     quebrar: do{
                         String strOpcao3 = JOptionPane.showInputDialog("Deseja calcular pela: \n"
                             + "1 - Regra igualitária\n"
@@ -134,86 +149,15 @@ public class UI {
                         int opcao3 = Integer.parseInt(strOpcao3);
                         switch (opcao3){
                             case 1:
-                            String strMes = JOptionPane.showInputDialog("Digite o mês da despesa em número:");
-                            if(strMes.length() == 1){
-                                strMes = "0" + strMes;
-                            }
-                            String strAno = JOptionPane.showInputDialog("Digite o ano da despesa:");
-                            try(
-                                FileReader fileReader =
-                                new FileReader("bancodedados/alunos.txt")){
-                                int data = fileReader.read();
-                                int contador = 0;
-                                String juntador = "";
-                                while(data != -1) {
-                                    if(contador == 0){
-                                        while(data != ';'){
-                                            juntador = juntador + (char)data;
-                                            data = fileReader.read();
-                                        }
-                                        nome = juntador;
-                                        juntador = "";
-                                    }
-                                    if(data == ';'){
-                                        contador += 1;
-                                    }
-                                    if(contador == 2){
-                                        while(data != '\n'){
-                                            data = fileReader.read();
-                                            juntador = juntador + (char)data;
-                                        }
-                                        if(data == '\n'){
-                                            moradores += 1;
-                                        }
-                                        rendimentos = Float.parseFloat(juntador);
-                                        somadorRendimentos = somadorRendimentos + Float.parseFloat(juntador);
-                                        juntador = "";
-                                        contador = 0;
-                                        try{
-                                            CalcularDespesa c = new CalcularDespesa(nome, rendimentos);
-                                            CalcularDespesa[] tempCalcularDespesas = new CalcularDespesa[calculardespesas.length + 1];
-                                            for(int i = 0; i < calculardespesas.length; i++){
-                                                tempCalcularDespesas[i] = calculardespesas[i];
-                                            }
-                                            tempCalcularDespesas[calculardespesas.length] = c;
-                                            calculardespesas = tempCalcularDespesas;
-                                        }catch(Excecoes e){
-                                            System.out.println(e.getMensagem());
-                                        }
-                                    }
-                                    //System.out.print((char) data);
-                                    data = fileReader.read();
+                                try{
+                                    CalcularDespesa calcular = new CalcularDespesa("m", 3);
+                                    float[] resposta = new float[2]; 
+                                    resposta = calcular.calcularIgualitaria();
+                                    moradores = resposta[0];
+                                    somadorDespesas = resposta[1];
+                                }catch(Excecoes e){
+                                    System.out.println(e.getMensagem());
                                 }
-                            } catch (IOException e) {
-                                System.out.println("An error occurred.");
-                                e.printStackTrace();
-                            }
-                            try(
-                                FileReader fileReader =
-                                new FileReader("bancodedados/despesas_"+ strMes + "_" + strAno +".txt")){
-                                int data = fileReader.read();
-                                int contador = 0;
-                                String juntador = "";
-                                while(data != -1) {
-                                    if(data == ';'){
-                                        contador += 1;
-                                    }
-                                    if(contador == 3){
-                                        while(data != '\n'){
-                                            data = fileReader.read();
-                                            juntador = juntador + (char)data;
-                                        }
-                                        somadorDespesas = somadorDespesas + Float.parseFloat(juntador);
-                                        juntador = "";
-                                        contador = 0;
-                                    }
-                                    //System.out.print((char) data);
-                                    data = fileReader.read();
-                                }
-                            } catch (IOException e) {
-                                System.out.println("An error occurred.");
-                                e.printStackTrace();
-                            }
                                 int igualitariaNovamente = JOptionPane.showConfirmDialog(
                                     null, 
                                     "Cada morador pagará: \nR$" + (somadorDespesas/moradores) + "->" + ((somadorDespesas/moradores)/somadorDespesas) * 100 +"%\n" + "Deseja calcular novamente?",
@@ -228,94 +172,13 @@ public class UI {
                                 break;
 
                             case 2:
-                                strMes = JOptionPane.showInputDialog("Digite o mês da despesa em número:");
-                                if(strMes.length() == 1){
-                                    strMes = "0" + strMes;
-                                }
-                                strAno = JOptionPane.showInputDialog("Digite o ano da despesa:");
-                                try(
-                                    FileReader fileReader =
-                                    new FileReader("bancodedados/alunos.txt")){
-                                    int data = fileReader.read();
-                                    int contador = 0;
-                                    String juntador = "";
-                                    while(data != -1) {
-                                        if(contador == 0){
-                                            while(data != ';'){
-                                                juntador = juntador + (char)data;
-                                                data = fileReader.read();
-                                            }
-                                            nome = juntador;
-                                            juntador = "";
-                                        }
-                                        if(data == ';'){
-                                            contador += 1;
-                                        }
-                                        if(contador == 2){
-                                            while(data != '\n'){
-                                                data = fileReader.read();
-                                                juntador = juntador + (char)data;
-                                            }
-                                            if(data == '\n'){
-                                                moradores += 1;
-                                            }
-                                            rendimentos = Float.parseFloat(juntador);
-                                            somadorRendimentos = somadorRendimentos + Float.parseFloat(juntador);
-                                            juntador = "";
-                                            contador = 0;
-                                            try{
-                                                CalcularDespesa c = new CalcularDespesa(nome, rendimentos);
-                                                CalcularDespesa[] tempCalcularDespesas = new CalcularDespesa[calculardespesas.length + 1];
-                                                for(int i = 0; i < calculardespesas.length; i++){
-                                                    tempCalcularDespesas[i] = calculardespesas[i];
-                                                }
-                                                tempCalcularDespesas[calculardespesas.length] = c;
-                                                calculardespesas = tempCalcularDespesas;
-                                            }catch(Excecoes e){
-                                                System.out.println(e.getMensagem());
-                                            }
-                                        }
-                                        //System.out.print((char) data);
-                                        data = fileReader.read();
-                                    }
-                                } catch (IOException e) {
-                                    System.out.println("An error occurred.");
-                                    e.printStackTrace();
-                                }
-                                try(
-                                    FileReader fileReader =
-                                    new FileReader("bancodedados/despesas_"+ strMes + "_" + strAno +".txt")){
-                        
-                                    int data = fileReader.read();
-                                    int contador = 0;
-                                    String juntador = "";
-                                    while(data != -1) {
-                                        if(data == ';'){
-                                            contador += 1;
-                                        }
-                                        if(contador == 3){
-                                            while(data != '\n'){
-                                                data = fileReader.read();
-                                                juntador = juntador + (char)data;
-                                            }
-                                            somadorDespesas = somadorDespesas + Float.parseFloat(juntador);
-                                            juntador = "";
-                                            contador = 0;
-                                        }
-                                        //System.out.print((char) data);
-                                        data = fileReader.read();
-                                    }
-                                } catch (IOException e) {
-                                    System.out.println("An error occurred.");
-                                    e.printStackTrace();
-                                }
                                 String resultado = "";
-                                for(int i = 0; i < calculardespesas.length; i++){
-                                    float calculo = somadorDespesas/somadorRendimentos;
-                                    calculo =  calculo * calculardespesas[i].getRendimentos();
-                                    resultado = resultado + calculardespesas[i].getNome()+ "->" + "R$" + calculo + "->" + ((calculo / somadorDespesas) * 100) +"%\n"; 
+                                try{
+                                    CalcularDespesa calcular = new CalcularDespesa("m", 3);
+                                    resultado = calcular.calcularProporcional();
+                                }catch(Excecoes e){
+                                    System.out.println(e.getMensagem());
                                 }
-                                resultado = resultado + "Total das despesas: R$" + somadorDespesas;
                                 int proporcionalNovamente = JOptionPane.showConfirmDialog(
                                     null, 
                                     "Os moradores pagarão: \n" + resultado + "\n" + "Deseja calcular novamente?",
@@ -334,15 +197,10 @@ public class UI {
                             
                             default:
                                 break;
-
-                            
                         }
-                        
                         //break;
                     }while(true);
-                    
-                
-
+                    break;
                 case 0:
                     break;
                 
@@ -356,8 +214,6 @@ public class UI {
                         if(encerrar == 1){
                             System.exit(0);
                         }
-                    
-
             }
         }while(opcao != 0);
     }
