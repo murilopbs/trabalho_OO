@@ -1,0 +1,36 @@
+Criterios: 
+ * Crit. 1 - Os cadastros funcionam adequadamente?:  OK
+ * Crit. 2 - Excecoes sao lancadas adequadamente?: NOK, há apenas uma classe
+
+   chamada EXCECOES, com as mensagens de excecao variando. Não foram criadas as
+   classes de exceções conforme o enunciado pediu. (-35 pontos)
+ * Crit. 3 - Associações sao realizadas adequadamente?: NOK, há relações de
+   herança que não fazem sentido. Ex.: Despesa --> SalvarDados, CalcularDespesa
+   --> Pessoa. (-15 pontos)
+ * Crit. 4 - Calculos estao corretos?: OK
+
+Pontos positivos: 
+
+
+
+
+
+Pontos negativos: 
+
+
+
+
+
+Dúvidas: 
+
+
+
+
+
+Comentários: 
+
+
+
+
+Nota: 
+50/100 pontos.
